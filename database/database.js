@@ -18,8 +18,8 @@ export async function getNotes() {
         let pool = await sql.connect(config);
         let result = await pool.request().query('SELECT * FROM notes');
         return result.recordset;
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+        console.log(error);
     }
 }
 
@@ -30,25 +30,25 @@ export async function getNote(id) {
             .input('id', sql.Int, id)
             .query('SELECT * FROM notes WHERE id = @id');
         return result.recordset[0];
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+        console.log(error);
     }
 
 }
 
 
-export async function createNote(title, contents, created) {
+export async function createNote(note) {
     try {
         let pool = await sql.connect(config);
 
         let result = await pool.request()
-            .input('title', sql.VarChar, title)
-            .input('contents', sql.Text, contents)
-            .input('created', sql.Date, created)
+            .input('title', sql.VarChar, note.title)
+            .input('contents', sql.Text, note.contents)
+            .input('created', sql.Date, note.created)
             .query('INSERT INTO notes (title, contents, created) VALUES (@title, @contents, @created)');
-        return getNotes();
-    } catch (err) {
-        console.log(err);
+        return `Note ${note.title} Created!`;
+    } catch (error) {
+        console.log(error);
     }
 }
 
@@ -64,8 +64,8 @@ export async function updateNote(id, note) {
             .input('created', sql.Date, note.created)
             .query('UPDATE notes SET title = @title, contents =  @contents, created = @created WHERE id = @id');
         return getNote(id);
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+       console.log(error);
     }
 }
 
@@ -78,9 +78,9 @@ export async function deleteNote(id) {
         let result = await pool.request()
             .input('id', sql.Int, id)
             .query('DELETE FROM notes WHERE id = @id');
-        return "record deleted";
-    } catch (err) {
-        console.log(err);
+        return `Note Deleted`;
+    } catch (error) {
+        console.log(error);
     }
 
 }
