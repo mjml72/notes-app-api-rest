@@ -37,14 +37,14 @@ export async function getNote(id) {
 }
 
 
-export async function createNote(note) {
+export async function createNote(title, contents, created) {
     try {
         let pool = await sql.connect(config);
 
         let result = await pool.request()
-            .input('title', sql.VarChar, note.title)
-            .input('contents', sql.Text, note.contents)
-            .input('created', sql.Date, note.created)
+            .input('title', sql.VarChar, title)
+            .input('contents', sql.Text, contents)
+            .input('created', sql.Date, created)
             .query('INSERT INTO notes (title, contents, created) VALUES (@title, @contents, @created)');
         return `Note ${note.title} Created!`;
     } catch (error) {
@@ -53,15 +53,15 @@ export async function createNote(note) {
 }
 
 
-export async function updateNote(id, note) {
+export async function updateNote(id, title, contents, created) {
     try {
         let pool = await sql.connect(config);
 
         let result = await pool.request()
             .input('id', sql.Int, id)
-            .input('title', sql.VarChar, note.title)
-            .input('contents', sql.Text, note.contents)
-            .input('created', sql.Date, note.created)
+            .input('title', sql.VarChar, title)
+            .input('contents', sql.Text, contents)
+            .input('created', sql.Date, created)
             .query('UPDATE notes SET title = @title, contents =  @contents, created = @created WHERE id = @id');
         return getNote(id);
     } catch (error) {
